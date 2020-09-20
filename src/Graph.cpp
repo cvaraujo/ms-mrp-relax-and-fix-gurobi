@@ -283,7 +283,7 @@ void Graph::SAE(string outputName) {
                     add_edge(i, arc->getD(), arc->getJitter(), graphJitterSP);
 
     for (i = 0; i < n; i++) {
-        if (removed[i]) continue;
+      //if (removed[i]) continue;
 
         distanceJitter = vector<int>(n);
 
@@ -379,12 +379,13 @@ void Graph::SAE(string outputName) {
             }          
         }
     }
+
     // CSHP root -> j (terminals)
     for (auto j : terminals) {
         if (!removed[j]) {
             SPPRC_Graph_Vert_Prep &vert_prop = get(vertex_bundle, graphDelay)[j];
             vert_prop.con = paramJitter;
-
+    
             r_c_shortest_paths(graphDelay,
                      get(&SPPRC_Graph_Vert_Prep::num, graphDelay),
                      get(&SPPRC_Graph_Arc_Prep::num, graphDelay),
@@ -397,6 +398,7 @@ void Graph::SAE(string outputName) {
                      dominance_spptw_prep(),
                      allocator<r_c_shortest_paths_label<SPPRCGraphPrep, spp_spp_res_cont_prep >>(),
                      default_r_c_shortest_paths_visitor());
+	    
             if (pareto_opt.empty()) 
                 delayFromCShp[j] = paramDelay;
             else {
@@ -406,7 +408,7 @@ void Graph::SAE(string outputName) {
                         minSP = p.cost;
                 delayFromCShp[j] = minSP;
             }
-
+    
             SPPRC_Graph_Vert_Prep &vert_prop_d = get(vertex_bundle, graphJitter)[j];
             vert_prop_d.con = paramDelay;
             // CSHP jitter
@@ -434,6 +436,7 @@ void Graph::SAE(string outputName) {
             }
         }
     }
+
     // CSHP: K -> J (NonTerminals) 
     for (auto j : DuS) {
         if (!removed[j]) {
