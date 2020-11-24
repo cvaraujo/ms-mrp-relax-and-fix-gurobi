@@ -14,6 +14,7 @@
 #include <fstream>
 #include <gurobi_c++.h>
 #include "Graph.h"
+#include <boost/algorithm/string.hpp>
 
 using namespace std;
 

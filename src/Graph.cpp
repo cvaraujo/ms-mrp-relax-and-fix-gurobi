@@ -159,7 +159,7 @@ Graph::Graph(string instance, string param, string outputName) {
     cout << "Load graph successfully" << endl;
 }
 
-void Graph::MVE(string outputName) {
+void Graph::MVE(string outputName, string prepOutp) {
     // Moterated Vertex Elimination using delay as cost and jitter resource
     int countEdges = 0, j;
     SPPRCGraphPrep graphJitterMae;
@@ -169,6 +169,8 @@ void Graph::MVE(string outputName) {
     // Archive to save the data
     ofstream output;
     output.open(outputName, ofstream::app);
+    ofstream prepfile;
+    prepfile.open(prepOutp, ofstream::app);
 
     // Create graph
     for (int i = 0; i < n; i++)
@@ -228,7 +230,7 @@ void Graph::MVE(string outputName) {
         }
     }
 
-    // Procedure to decido which nodes and arcs will be removed
+    // Procedure to decide which nodes and arcs will be removed
     bool removeNodes, removeArc;
     int numNodes = 0, numArcs = 0;
     for (int q : nonTerminals) {
@@ -242,6 +244,7 @@ void Graph::MVE(string outputName) {
         
         if (removeNodes) {
             removed[q] = true;
+	    prepfile << "MVE " << q << endl;
             numNodes++;
         } else {
             for (auto *arc : arcs[q]) {
@@ -256,6 +259,7 @@ void Graph::MVE(string outputName) {
 
                 if (removeArc) {
                     removedY[q][j] = true;
+		    prepfile << "MAE " << q << " " << j << endl;
                     numArcs++;
                 }                
             }
@@ -265,17 +269,19 @@ void Graph::MVE(string outputName) {
     output << "MVE: " << numNodes << endl;
     output << "MAE: " << numArcs << endl;
     output.close();
+    prepfile.close();
     cout << "MVE/MAE preprocessing finished!" << endl;
 }
 
-void Graph::SAE(string outputName) {
+void Graph::SAE(string outputName, string prepOutp) {
     int i, u, j, minSP, countEdges = 0;
     vector<int> jitterFromCShp = vector<int>(n), delayFromCShp = vector<int>(n), minSPVec = vector<int>(n);
     vector<int> distanceJitter;
     vector<vector<int>> CSHP = vector<vector<int>>(n, vector<int>(n));
     BoostGraph graphJitterSP = BoostGraph(n);
     SPPRCGraphPrep graphDelay, graphJitter;
-
+      
+    
     for (i = 1; i < n; i++)
         if (!removed[i])
             for (auto arc : arcs[i]) 
@@ -472,8 +478,9 @@ void Graph::SAE(string outputName) {
         }
     }
 
-    ofstream output;
+    ofstream output, prepfile;
     output.open(outputName, ofstream::app);
+    prepfile.open(prepOutp, ofstream::app);
 
     int cntRem = 0;
     for (auto i : DuS) {
@@ -484,6 +491,7 @@ void Graph::SAE(string outputName) {
                     if (delayFromCShp[i] + arc->getDelay() + CSHP[k][j] > paramDelay) {
                         cntRem++;
                         removedF[i][j][k] = true;
+			prepfile << "SAE " << i << " " << j << " " << k << endl;
                     }
         }
     }
@@ -491,6 +499,7 @@ void Graph::SAE(string outputName) {
     output << "SAE: " << cntRem << endl;
     cout << "SAE preprocessing finished!" << endl;
     output.close();
+    prepfile.close();
 }
 
 void Graph::finishPreprocessing(string outputName, bool mve, bool sae) {

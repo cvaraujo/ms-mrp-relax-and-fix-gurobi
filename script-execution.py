@@ -2,7 +2,7 @@ import os
 import subprocess
 
 folders = ['50', '75', '100']
-algorithms = ['model', 'lr', 'rnf-one', 'rnf-all']
+algorithms = ['model']
 commands = []
 
 delay = []
@@ -11,6 +11,7 @@ variation = []
 
 for alg in algorithms:
 	os.mkdir("results_" + alg)
+os.mkdir("preprocessing")
 
 for f in folders:
 	for i in range(10, 110, 10):
@@ -19,7 +20,7 @@ for f in folders:
 		for inst in instance:
 			if (inst[0] == 'w' or inst[0] == '1'):
 				for alg in algorithms:
-					commands.append("./MaxService " + path + "/" + inst + " " + path + "/param-" + inst + " results_" + alg + "/result_" + inst + " 1 1 " + alg + " 3600")
+					commands.append("./MaxService " + path + "/" + inst + " " + path + "/param-" + inst + " results_" + alg + "/result_" + inst + " 1 1 " + alg + " 3600 preprocessing/" + inst)
 
 f = '200'
 for i in range(125, 375, 25):
@@ -28,7 +29,7 @@ for i in range(125, 375, 25):
 	for inst in instance:
 		if (inst[0] == 'w' or inst[0] == '1'):
 			for alg in algorithms:
-				commands.append("./MaxService " + path + "/" + inst + " " + path + "/param-" + inst + " results_" + alg + "/result_" + inst + " 1 1 " + alg + " 3600")
+				commands.append("./MaxService " + path + "/" + inst + " " + path + "/param-" + inst + " results_" + alg + "/result_" + inst + " 1 1 " + alg + " 3600 preprocessing/" + inst)
 
 for c in commands:
    print(c)

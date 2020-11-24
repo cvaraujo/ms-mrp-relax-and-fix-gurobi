@@ -51,9 +51,9 @@ public:
 
   Graph(string instance, string param, string outputName);
 
-  void SAE(string outputName);
+  void SAE(string outputName, string prepOutp);
 
-  void MVE(string outputName);
+  void MVE(string outputName, string prepOutp);
 
   void finishPreprocessing(string outputName, bool mve, bool sae);
 

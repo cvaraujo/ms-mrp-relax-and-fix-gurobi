@@ -18,11 +18,6 @@
 #include "boost/config.hpp"
 #include "boost/graph/r_c_shortest_paths.hpp"
 
-
-#ifdef BOOST_MSVC
-#  pragma warning(disable: 4267)
-#endif
-
 using namespace std;
 using namespace boost;
 

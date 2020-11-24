@@ -12,11 +12,9 @@ Model::Model(Graph *graph) {
 }
 
 void Model::initialize() {
-  cout << "Aqui" << endl;
   int o, d, n = graph->getN(), m = graph->getM();
   try {
 
-    cout << n << " - " << m << endl;
     env.set("LogFile", "MS_mip.log");
     env.start();
 
@@ -37,7 +35,7 @@ void Model::initialize() {
 	}
       }
     }
-
+   
     for (auto i : graph->terminals) {
       sprintf(name, "z_%d", i);
       z[i] = model.addVar(0.0, 1.0, 0, GRB_BINARY, name);
@@ -90,6 +88,11 @@ void Model::initializeRnf() {
 }
 
 void Model::initModel() {
+  ifstream file;
+  file.open("solution.sol");
+  string line;
+  vector<string> token;
+  int i , j;
   cout << "Begin the model creation" << endl;
   objectiveFunction();
   rootFlow(), flowConservation(), terminalsFlow();
@@ -330,7 +333,7 @@ void Model::nonTerminalsLeafs() {
 void Model::solve(string timeLimit) {
   try {
     model.set("TimeLimit", timeLimit);
-    model.set("OutputFlag", "0");
+    //model.set("OutputFlag", "0");
     model.update();
     model.write("model.lp");
     model.optimize();
@@ -342,7 +345,7 @@ void Model::solve(string timeLimit) {
 void Model::solveLinear(string timeLimit) {
   try {
     model.set("TimeLimit", timeLimit);
-    model.set("OutputFlag", "0");
+    //model.set("OutputFlag", "0");
     model.relax();
     model.update();
     model.write("model.lp");
