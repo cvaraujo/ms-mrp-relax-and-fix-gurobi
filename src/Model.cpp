@@ -22,7 +22,7 @@ void Model::initialize() {
     y = vector<vector<GRBVar>>(n, vector<GRBVar>(n));
     z = vector<GRBVar>(n);
 
-    char name[30];
+    char name[40];
     for (o = 0; o < n; o++) {
       for (auto *arc : graph->arcs[o]) {
 	d = arc->getD();
@@ -35,11 +35,21 @@ void Model::initialize() {
 	}
       }
     }
+
    
     for (auto i : graph->terminals) {
       sprintf(name, "z_%d", i);
       z[i] = model.addVar(0.0, 1.0, 0, GRB_BINARY, name);
     }
+    
+    // ifstream sol;
+    // sol.open("solution.sol");
+    
+    // int i, j;
+    // while(!sol.eof()) {
+    //     sol >> i >> j;
+    //     model.addConstr(y[i][j] == 1);
+    // }
 
     model.update();
     cout << "Create variables" << endl;
@@ -88,11 +98,11 @@ void Model::initializeRnf() {
 }
 
 void Model::initModel() {
-  ifstream file;
-  file.open("solution.sol");
-  string line;
-  vector<string> token;
-  int i , j;
+  // ifstream file;
+  // file.open("solution.sol");
+  // string line;
+  // vector<string> token;
+  // int i , j;
   cout << "Begin the model creation" << endl;
   objectiveFunction();
   rootFlow(), flowConservation(), terminalsFlow();
@@ -311,7 +321,7 @@ void Model::limVariation() {
 }
 
 void Model::primeToTerminals() {
-  for (auto k : graph->terminals)
+   for (auto k : graph->terminals)
     model.addConstr(z[k] >= f[0][k][k], "prime_to_terminals_" + to_string(k));
   model.update();
   cout << "S' to terminals" << endl;
@@ -319,21 +329,22 @@ void Model::primeToTerminals() {
 
 void Model::nonTerminalsLeafs() {
   model.addConstr(y[graph->getRoot()][0] == 1);
-  for (auto q : graph->DuS) {
-    for (auto e : graph->DuS) {
-      if (e != q) {
-	model.addConstr(f[0][q][e] == 0, "non_terminals_leafs_" + to_string(q) + "_" + to_string(e));
-      }
-    }
-  }
-  model.update();
+//   for (auto q : graph->DuS) {
+//     for (auto e : graph->DuS) {
+//       if (e != q) {
+// 	model.addConstr(f[0][q][e] == 0, "non_terminals_leafs_" + to_string(q) + "_" + to_string(e));
+//       }
+//     }
+//   }
+//  model.update();
   cout << "Non terminals are leafs" << endl;
 }
 
 void Model::solve(string timeLimit) {
   try {
     model.set("TimeLimit", timeLimit);
-    //model.set("OutputFlag", "0");
+    // model.computeIIS();
+    // model.set("OutputFlag", "0");
     model.update();
     model.write("model.lp");
     model.optimize();

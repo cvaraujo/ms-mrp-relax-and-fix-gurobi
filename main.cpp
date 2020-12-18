@@ -15,8 +15,9 @@ int main(int argc, const char *argv[]) {
 	cout << "Begin the preprocessing" << endl;
 	int preprocessingTime;
 	auto start = chrono::steady_clock::now();
-	if (mve.compare(argv[4]) == 0) graph->MVE(argv[3], argv[8]);
-	if (sae.compare(argv[5]) == 0) graph->SAE(argv[3], argv[8]);
+	if (mve.compare(argv[4]) == 0) graph->MVE(argv[3], argv[9]);
+	if (sae.compare(argv[5]) == 0) graph->SAE(argv[3], argv[9]);
+	graph->loadPreprocessing(argv[8]);
 	graph->finishPreprocessing(argv[3], mve.compare(argv[4]) == 0, sae.compare(argv[5]) == 0);
 	auto end = chrono::steady_clock::now();
 	preprocessingTime = chrono::duration_cast<chrono::seconds>(end - start).count();

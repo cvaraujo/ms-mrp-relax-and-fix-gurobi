@@ -59,6 +59,8 @@ public:
 
   void orderingPaths(bool useDelay);
 
+  void loadPreprocessing(string filename);
+
   void showGraph();
 
   int getN() const;

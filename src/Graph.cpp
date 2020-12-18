@@ -152,9 +152,9 @@ Graph::Graph(string instance, string param, string outputName) {
     sort(delayVector.begin(), delayVector.end(), greater<int>());
     sort(jitterVector.begin(), jitterVector.end(), greater<int>());
 
-    for (int i = 0; i < n - 2; i++)
-        bigMDelay += delayVector[i], bigMJitter += jitterVector[i];
-
+    // for (int i = 0; i < n - 2; i++)
+        // bigMDelay += delayVector[i], bigMJitter += jitterVector[i];
+    
     // output.close();
     cout << "Load graph successfully" << endl;
 }
@@ -557,9 +557,9 @@ void Graph::finishPreprocessing(string outputName, bool mve, bool sae) {
         }
     }
 
-    bigMDelay = 0, bigMJitter = 0;
-    for (int i = 0; i < n - (cntRemAll+2); i++)
-      bigMDelay += delayVector[i], bigMJitter += jitterVector[i];
+    bigMDelay = paramDelay+1, bigMJitter = paramJitter+1;
+    //for (int i = 0; i < n - (cntRemAll+2); i++)
+    //  bigMDelay += delayVector[i], bigMJitter += jitterVector[i];
 
     output << "Terminals_rem: " << cntRemTerm << endl;
     output << "Nodes_rem: " << cntRemAll << endl;
@@ -573,6 +573,27 @@ void Graph::finishPreprocessing(string outputName, bool mve, bool sae) {
       arcs[0].push_back(new Arc(0, dus, 1, 1, 0, 0)); 
     }
     cout << "Finishing preprocessing" << endl;
+}
+
+void Graph::loadPreprocessing(string filename) {
+  ifstream arc;
+  arc.open(filename, fstream::in);
+  string token;
+  int i, j, k;
+  
+  while(!arc.eof()) {
+    arc >> token;
+    if (token == "MVE") {
+      arc >> i;
+      removed[i] = true;
+    } else if (token == "MAE") {
+      arc >> i >> j;
+      removedY[i][j] = true;
+    } else {
+      arc >> i >> j >> k;
+      removedF[i][j][k] = true;
+    }
+  }  
 }
 
 // Driver function to sort the vector elements 
